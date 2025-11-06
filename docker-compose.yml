@@ -53,6 +53,13 @@ services:
     depends_on:
       - kafka
 
+  postgres-inventory:
+    image: postgres:15
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: postgres
+
 volumes:
   rabbitmq_data:
 
