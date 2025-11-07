@@ -1,17 +1,47 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AppService } from './app.service';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+
+interface ProductCreateDTO {
+  name: string;
+  sku: string;
+  price: number;
+}
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private prisma: PrismaService) {}
 
-  @MessagePattern('storage-ec')
-  getStorage(@Payload() message) {
-    console.log('Message received !', message);
+  @Get('products')
+  async getProducts() {
+    const products = await this.prisma.product.findMany();
 
     return {
-      sucess: true,
+      data: {
+        products,
+      },
+    };
+  }
+
+  @Post('product')
+  async addProduct(@Body() createDTO: ProductCreateDTO) {
+    console.log('received', createDTO);
+
+    const { name, price, sku } = createDTO;
+
+    const newProduct = await this.prisma.product.create({
+      data: {
+        name,
+        sku,
+        price,
+        stock: 0,
+        available: 0,
+      },
+    });
+
+    return {
+      data: {
+        ...newProduct,
+      },
     };
   }
 }

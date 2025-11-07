@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id        String @id @default(uuid())
+  sku       String @unique
+  name      String
+  price     Float
+  stock     Int    
+  reserved  Int    @default(0) 
+  available Int  
+  
+  @@map("products")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Reservation {
+  id        String   @id @default(uuid())
+  orderId   String   @unique
+  productId String
+  quantity  Int
+  status    ReservationStatus
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  @@map("reservations")
+}
