@@ -26,6 +26,18 @@ services:
     networks:
       - my-network
 
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - 8080:8080
+    environment:
+      - DYNAMIC_CONFIG_ENABLED=true
+    networks:
+      - my-network
+    depends_on:
+      - kafka
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -41,24 +53,18 @@ services:
     networks:
       - my-network
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui
-    container_name: kafka-ui
-    ports:
-      - 8080:8080
-    environment:
-      - DYNAMIC_CONFIG_ENABLED=true
-    networks:
-      - my-network
-    depends_on:
-      - kafka
-
   postgres-inventory:
     image: postgres:15
+    container_name: postgres-inventory
     restart: always
     shm_size: 128mb
     environment:
       POSTGRES_PASSWORD: postgres
+      PG_PORT: 5432
+    ports:
+      - 5432:5432
+    networks:
+      - my-network
 
 volumes:
   rabbitmq_data:
