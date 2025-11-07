@@ -1,47 +1,25 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-
-interface ProductCreateDTO {
-  name: string;
-  sku: string;
-  price: number;
-}
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import * as productRepository from './repositories/product.repository';
 
 @Controller()
 export class AppController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private productRepository: productRepository.ProductRepository) {}
 
   @Get('products')
   async getProducts() {
-    const products = await this.prisma.product.findMany();
+    const products = await this.productRepository.getAll();
 
     return {
       data: {
-        products,
+        ...products,
       },
     };
   }
 
   @Post('product')
-  async addProduct(@Body() createDTO: ProductCreateDTO) {
-    console.log('received', createDTO);
-
-    const { name, price, sku } = createDTO;
-
-    const newProduct = await this.prisma.product.create({
-      data: {
-        name,
-        sku,
-        price,
-        stock: 0,
-        available: 0,
-      },
-    });
-
-    return {
-      data: {
-        ...newProduct,
-      },
-    };
+  @HttpCode(201)
+  async addProduct(@Body() createDTO: productRepository.ProductCreateDTO) {
+    await this.productRepository.create(createDTO);
   }
 }
