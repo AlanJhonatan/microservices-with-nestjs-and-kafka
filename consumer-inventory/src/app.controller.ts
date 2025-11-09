@@ -1,25 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
-import * as productRepository from './repositories/product.repository';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
-  constructor(private productRepository: productRepository.ProductRepository) {}
+  constructor() {}
 
-  @Get('products')
-  async getProducts() {
-    const products = await this.productRepository.getAll();
-
+  @Get()
+  getAll() {
     return {
-      data: {
-        ...products,
-      },
+      message: 'hello world !',
     };
-  }
-
-  @Post('product')
-  @HttpCode(201)
-  async addProduct(@Body() createDTO: productRepository.ProductCreateDTO) {
-    await this.productRepository.create(createDTO);
   }
 }
