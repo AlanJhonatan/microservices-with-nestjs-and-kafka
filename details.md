@@ -3,13 +3,13 @@
 services:
   postgres-order:
     image: postgres:15
-    
-  postgres-inventory:  
+
+  postgres-inventory:
     image: postgres:15
-    
+
   mongodb-payment:
     image: mongo:6
-    
+
   mongodb-notification:
     image: mongo:6
 
@@ -31,7 +31,7 @@ model Order {
   total     Float
   items     OrderItem[]
   createdAt DateTime @default(now())
-  
+
   @@map("orders")
 }
 
@@ -42,7 +42,7 @@ model OrderItem {
   productId String
   quantity Int
   price    Float
-  
+
   @@map("order_items")
 }
 
@@ -62,7 +62,7 @@ model Product {
   price    Float
   stock    Int
   reserved Int    @default(0)
-  
+
   @@map("products")
 }
 
@@ -72,7 +72,7 @@ model Reservation {
   productId String
   quantity Int
   status  ReservationStatus
-  
+
   @@map("reservations")
 }
 
@@ -95,13 +95,13 @@ model Payment {
   status   PaymentStatus
   method   PaymentMethod // cartão, pix, etc
   metadata Json? // dados flexíveis por método
-  
+
   @@map("payments")
 }
 
 # Notification Schema
 ``` js
-// schema.prisma - Notification Service  
+// schema.prisma - Notification Service
 model Notification {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   userId   String
@@ -109,7 +109,7 @@ model Notification {
   template String // nome do template
   data     Json   // dados dinâmicos para o template
   status   DeliveryStatus
-  
+
   @@map("notifications")
 }
 ```
