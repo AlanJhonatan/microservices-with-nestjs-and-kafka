@@ -65,9 +65,12 @@ services:
       - 5432:5432
     networks:
       - my-network
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
 volumes:
   rabbitmq_data:
+  db_data:
 
 
 networks:
